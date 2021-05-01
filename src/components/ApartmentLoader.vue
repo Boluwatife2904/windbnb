@@ -77,11 +77,21 @@ export default {};
     background: linear-gradient(
       90deg,
       transparent 0%,
-      rgb(233, 233, 233) 50%,
+      rgba(233, 233, 233, 0.5) 50%,
       transparent 100%
     );
     transition: all 0.3s;
     animation: shimmer 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  }
+
+  @media screen and (max-width: 992px) {
+    max-width: 320px;
+  }
+
+  @media screen and (max-width: 768px) {
+    max-width: 320px;
+    margin-left: auto;
+    margin-right: auto;
   }
 }
 

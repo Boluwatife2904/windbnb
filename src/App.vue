@@ -1,6 +1,7 @@
 <template>
   <div class="app-content">
-    <header>
+    <!-- HEADER + SEARCH FORM -->
+    <header class="topbar-header">
       <div class="logo">
         <div class="triangle"></div>
         <h6>windbnb</h6>
@@ -21,40 +22,70 @@
         </div>
       </div>
     </header>
+
+    <!-- MAIN CONTENT  -->
     <div class="available-apartments">
+      <!-- HEADER SECTION -->
       <header class="header">
         <h3>Stays in Finland</h3>
         <p>{{ filteredApartments.length }}+ stays</p>
       </header>
+
+      <!-- LOADING ANIMATIONS -->
       <div class="loading-section" v-if="isLoading">
         <apartment-loader
           v-for="apartment in 9"
           :key="apartment"
         ></apartment-loader>
       </div>
-      <div class="all-apartments" v-else-if="!isLoading && filteredApartments && filteredApartments.length > 0">
+
+      <!-- LIST OF AVAILABLE APARTMENTS -->
+      <div
+        class="all-apartments"
+        v-else-if="
+          !isLoading && filteredApartments && filteredApartments.length > 0
+        "
+      >
         <single-apartment
           v-for="apartment in filteredApartments"
           :key="apartment.title"
           :apartment="apartment"
         ></single-apartment>
       </div>
+
+      <!-- EMPTY SCREEN WHEN NO APARTMENT IS FOUND -->
       <div class="no-apartment-found" v-else>
-        <img src="@/assets/error.png" alt="Error Image">
+        <img src="@/assets/error.png" alt="Error Image" />
         <h6>No Result Found</h6>
-        <p>We've searched more than 350 hotels and did not find any hotels for your search</p>
+        <p>
+          We've searched more than 350 hotels and did not find any hotels for
+          your search
+        </p>
         <button @click="clearSearch">Search Again</button>
       </div>
     </div>
+    
+
+    <footer>
+      <p>Created by 
+        <span class="username"><a href="https://twitter.com/developerBolu">Boluwatife</a></span> - 
+        <span class="devchallenges"><a href="https://devchallenges.io">devChallenges.io</a></span></p>
+    </footer>
+    <!-- SEARCH HOTELS MODAL -->
     <teleport to="#app">
       <div
         class="search-modal"
-        @click.self="openSearchModal = false"
         v-if="openSearchModal"
       >
         <div class="modal">
+          <header>
+            <h5>Edit your search</h5>
+            <button class="close" @click="openSearchModal = false">
+              <i class="fa fa-times"></i>
+            </button>
+          </header>
           <div class="search-form">
-            <div class="location">
+            <div class="location" :class="{'active' : showLocation}" @click="showLocations">
               <p>Location</p>
               <span v-if="location">{{ location }}, Finland</span>
               <span class="empty" v-else>Choose a Location</span>
@@ -62,7 +93,7 @@
                 <i class="fa fa-times"></i>
               </button>
             </div>
-            <div class="guests">
+            <div class="guests" :class="{'active' : showGuest}" @click="showGuests">
               <p>guests</p>
               <span v-if="guests"
                 >{{ guests }} guest<span v-if="guests > 1">s</span></span
@@ -70,11 +101,11 @@
               <span class="empty" v-else>Add guests</span>
             </div>
             <div class="submit">
-              <button><i class="fa fa-search"></i> Search</button>
+              <button @click="openSearchModal = false"><i class="fa fa-search"></i> Search</button>
             </div>
           </div>
           <div class="search-options">
-            <div class="location">
+            <div class="location" :class="{'invisible' : !showLocation}">
               <ul>
                 <li
                   v-for="location in locations"
@@ -85,7 +116,7 @@
                 </li>
               </ul>
             </div>
-            <div class="guests">
+            <div class="guests" :class="{'invisible' : !showGuest}">
               <div class="adults">
                 <h6>Adults</h6>
                 <span>Age 13 and above</span>
@@ -140,6 +171,8 @@ export default {
       location: null,
       guests: null,
       openSearchModal: false,
+      showLocation: false,
+      showGuest: false,
       numberOfAdults: 0,
       numberOfChildren: 0,
       apartments: [
@@ -338,6 +371,14 @@ export default {
       this.numberOfAdults = 0;
       this.numberOfChildren = 0;
     },
+    showLocations() {
+      this.showLocation = true;
+      this.showGuest = false;
+    },
+    showGuests() {
+      this.showGuest = true;
+      this.showLocation = false;
+    },
     clearLocation() {
       this.location = null;
     },
@@ -368,8 +409,8 @@ export default {
   mounted() {
     setTimeout(() => {
       this.isLoading = false;
-    }, 1500)
-  }
+    }, 1500);
+  },
 };
 </script>
 
@@ -411,7 +452,7 @@ export default {
     max-width: 1140px;
   }
 
-  header {
+  .topbar-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -438,6 +479,10 @@ export default {
         color: #eb5757;
         padding-left: 6px;
       }
+
+      @media screen and (max-width: 500px) {
+        margin-bottom: 30px;
+      }
     }
 
     .search-form {
@@ -456,9 +501,17 @@ export default {
         border-right: 1px solid #eee;
         font-family: "Mulish", sans-serif;
 
+        @media screen and (max-width: 380px) {
+          padding: 20px 15px;
+        }
+
         span {
           font-size: 14px;
           line-height: 18px;
+
+          @media screen and (max-width: 380px) {
+            font-size: 13px;
+          }
         }
 
         .empty {
@@ -468,16 +521,33 @@ export default {
 
       .search {
         padding: 20px 20px;
+        margin-left: auto;
+        margin-right: auto;
 
         i {
           color: #eb5757;
         }
       }
+
+      @media screen and (max-width: 500px) {
+        margin-left: auto;
+        margin-right: auto;
+        width: 85%;
+      }
+
+      @media screen and (max-width: 430px) {
+        width: 95%;
+      }
+    }
+
+    @media screen and (max-width: 500px) {
+      flex-direction: column;
+      align-items: flex-start;
     }
   }
 
   .available-apartments {
-    header {
+    .header {
       display: flex;
       justify-content: space-between;
       margin-bottom: 30px;
@@ -526,7 +596,7 @@ export default {
     }
 
     p {
-      color : #222;
+      color: #222;
       margin-bottom: 14px;
       line-height: 30px;
     }
@@ -546,6 +616,32 @@ export default {
       }
     }
   }
+
+  footer {
+    text-align: center;
+    margin-top: 30px;
+    margin-bottom: 20px;
+
+    p {
+      margin: 0;
+      font-weight: 500;
+      font-size: 14px;
+      line-height: 17px;
+      color: #828282;
+
+      .username {
+        font-weight: 700;        
+      }
+
+      a {
+        color: inherit;
+
+        &:focus {
+          outline: none;
+        }
+      }
+    }
+  }
 }
 
 .search-modal {
@@ -562,6 +658,49 @@ export default {
     width: 100%;
     height: 60vh;
     padding: 50px 100px;
+    position: relative;
+
+    @media screen and (max-width: 800px) {
+      padding: 50px;
+    }
+
+    @media screen and (max-width: 660px) {
+      padding: 50px 30px;
+    }
+
+    @media screen and (max-width: 600px) {
+      height: 75vh;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+
+      @media screen and (min-width: 660px) {
+        display: none;
+      }
+
+      h5 {
+        font-weight: bold;
+        font-size: 14px;
+        line-height: 15px;
+        color: #333;
+      }
+
+      .close {
+        border: none;
+        background: none;
+        font-size: 18px;
+        color: #333;
+        cursor: pointer;
+
+        &:focus {
+          outline: none;
+        }
+      }
+    }
 
     .search-form {
       background: #ffffff;
@@ -571,6 +710,11 @@ export default {
       justify-content: space-between;
       align-items: center;
 
+      @media screen and (max-width: 414px) {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
       .location,
       .guests {
         position: relative;
@@ -578,6 +722,25 @@ export default {
         width: 33.3%;
         padding: 10px 20px;
         border-right: 1px solid #eee;
+        border-radius: 0;
+        cursor: pointer;
+
+        &.active {
+          border: 1px solid #333;
+          border-radius: 20px;
+        }
+
+        @media screen and (max-width: 600px) {
+          flex: 1 1 50%;
+          width: 50%;
+        }
+
+        @media screen and (max-width: 414px) {
+          border-right: none;
+          border-bottom: 1px solid #eee;
+          flex: 1 1 100%;
+          width: 100%;
+        }
 
         p {
           font-family: "Mulish", sans-serif;
@@ -622,16 +785,37 @@ export default {
         flex: 1 1 33.3%;
         width: 33.3%;
 
+        @media screen and (max-width: 600px) {
+          position: absolute;
+          bottom: 30px;
+          left: 50%;
+          transform: translateX(-50%);
+          flex: 1 1 100%;
+          width: 100%;
+        }
+
         button {
           padding: 12px 20px;
           display: block;
           margin: auto;
           background: #eb5757;
-          color: #fff;
-          outline: none;
+          color: #F2F2F2;
           border: none;
           box-shadow: 0px 1px 6px rgba(0, 0, 0, 0.1);
           border-radius: 16px;
+          font-family: "Mulish", sans-serif;
+          font-weight: bold;
+          font-size: 14px;
+          line-height: 18px;
+          cursor: pointer;
+          
+          &:focus {
+            outline: none;
+          }
+
+           i {
+             margin-right: 4px;
+           }
         }
       }
     }
@@ -647,10 +831,17 @@ export default {
         flex: 1 1 33.3%;
         width: 33.3%;
         max-width: 33.3%;
+
+        @media screen and (max-width: 600px) {
+          flex: 1 1 50%;
+          width: 50%;
+          max-width: 50%;
+        }
       }
 
       .location {
-        padding-left: 30px;
+        padding-left: 15px;
+        visibility: visible;
 
         ul {
           list-style: none;
@@ -671,10 +862,24 @@ export default {
             }
           }
         }
+
+        &.invisible {
+          visibility: hidden;
+
+          @media screen and (max-width: 414px) {
+            display: none;
+          }
+        }
       }
 
       .guests {
+        visibility: visible;
+        padding-left: 15px;
         font-family: "Mulish";
+
+        &.invisible {
+          visibility: hidden;
+        }
 
         .adults,
         .children {
