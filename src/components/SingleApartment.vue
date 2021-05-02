@@ -53,10 +53,16 @@ export default {
     .type-and-rating {
       display: flex;
       justify-content: space-between;
-      align-items: flex-start;
+      align-items: center;
       margin-bottom: 14px;
+      padding: 4px 0;
+      min-height: 33px;
 
       .type {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+
         .super-host {
           font-weight: bold;
           font-size: 10px;
@@ -67,6 +73,10 @@ export default {
           margin-right: 5px;
           border: 1px solid #4f4f4f;
           border-radius: 12px;
+
+          @media screen and (max-width: 384px) {
+            font-size: 6px;
+          }
         }
 
         .beds,
