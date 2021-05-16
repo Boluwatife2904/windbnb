@@ -1,5 +1,5 @@
 <template>
-  <div class="app-content">
+  <container>
     <!-- NAVBAR -->
     <Navbar
       :guests="guests"
@@ -7,38 +7,31 @@
       @open-search-modal="openSearchModal = true"
     />
 
-    <!-- MAIN CONTENT  -->
-    <div class="available-apartments">
-      <!-- HEADER SECTION -->
-      <header class="header">
-        <h3>Stays in Finland</h3>
-        <p>{{ filteredApartments.length }}+ stays</p>
-      </header>
+    <!-- HEADER SECTION -->
+    <ApartmentsHeader :length="filteredApartments.length" />
 
-      <!-- LOADING ANIMATIONS -->
-      <div class="loading-section" v-if="isLoading">
-        <apartment-loader
-          v-for="apartment in 9"
-          :key="apartment"
-        ></apartment-loader>
-      </div>
+    <!-- LOADING ANIMATIONS -->
+    <flex-container v-if="isLoading">
+      <apartment-loader
+        v-for="apartment in 9"
+        :key="apartment"
+      ></apartment-loader>
+    </flex-container>
 
-      <!-- LIST OF AVAILABLE APARTMENTS -->
-      <div
-        class="all-apartments"
-        v-else-if="
-          !isLoading && filteredApartments && filteredApartments.length > 0
-        "
-      >
-        <single-apartment
-          v-for="apartment in filteredApartments"
-          :key="apartment.title"
-          :apartment="apartment"
-        ></single-apartment>
-      </div>
+    <!-- LIST OF AVAILABLE APARTMENTS -->
+    <flex-container
+      v-else-if="
+        !isLoading && filteredApartments && filteredApartments.length > 0
+      "
+    >
+      <single-apartment
+        v-for="apartment in filteredApartments"
+        :key="apartment.title"
+        :apartment="apartment"
+      ></single-apartment>
+    </flex-container>
 
-      <EmptySearch @clear-search="clearSearch" v-else />
-    </div>
+    <EmptySearch @clear-search="clearSearch" v-else />
 
     <!-- SEARCH HOTELS MODAL -->
     <teleport to="#app">
@@ -62,7 +55,7 @@
         @decrement-adults="decrementAdults"
       />
     </teleport>
-  </div>
+  </container>
 </template>
 
 <script>
@@ -72,6 +65,9 @@ import Navbar from "./components/Navbar.vue";
 import Footer from "./components/Footer.vue";
 import EmptySearch from "./components/EmptySearch.vue";
 import SearchModal from "./components/SearchModal.vue";
+import FlexContainer from "./components/FlexContainer.vue";
+import Container from "./components/Container.vue";
+import ApartmentsHeader from "./components/ApartmentsHeader.vue";
 
 export default {
   name: "App",
@@ -82,6 +78,9 @@ export default {
     SingleApartment,
     ApartmentLoader,
     SearchModal,
+    FlexContainer,
+    Container,
+    ApartmentsHeader,
   },
   computed: {
     filteredApartments() {
@@ -352,62 +351,5 @@ export default {
 // SETTING FONT FAMILY
 #app {
   font-family: "Montserrat", sans-serif;
-}
-
-// MAIN APP CONTENT
-.app-content {
-  width: 100%;
-  padding-right: 15px;
-  padding-left: 15px;
-  margin-left: auto;
-  margin-right: auto;
-
-  @media (min-width: 576px) {
-    max-width: 540px;
-  }
-
-  @media (min-width: 768px) {
-    max-width: 720px;
-  }
-
-  @media (min-width: 992px) {
-    max-width: 960px;
-  }
-
-  @media (min-width: 1200px) {
-    max-width: 1140px;
-  }
-
-  // AVAILABLE APARTMENTS CONTAINER
-  .available-apartments {
-    .header {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 30px;
-
-      h6 {
-        font-weight: bold;
-        font-size: 24px;
-        line-height: 29px;
-        color: #333333;
-      }
-
-      p {
-        font-weight: 600;
-        font-size: 14px;
-        line-height: 17px;
-        color: #4f4f4f;
-      }
-    }
-
-    .loading-section,
-    .all-apartments {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      width: 100%;
-    }
-  }
 }
 </style>
