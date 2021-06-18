@@ -82,25 +82,26 @@ export default {
   name: "SearchModal",
   props: ['location', 'guests', 'numberOfAdults', 'numberOfChildren', 'locations', 'showLocation', 'showGuest'],
   emits: ['show-locations', 'show-guests', 'close-search-modal', 'set-location', 'clear-location', 'increment-children', 'decrement-chilren', 'increment-adults', 'decrement-adults'],
-  methods: {
-    closeSearchModal() {
-      this.$emit('close-search-modal');
-    },
-    setLocation(location) {
-      this.$emit('set-location', location)
-    },
-    incrementChildren() {
-      this.$emit('increment-children')
-    },
-    decrementChildren() {
-      this.$emit('decrement-children')
-    },
-    incrementAdults() {
-      this.$emit('increment-adults')
-    },
-    decrementAdults() {
-      this.$emit('decrement-adults')
+  setup(_, context) {
+    const closeSearchModal = () => {
+      context.emit('close-search-modal');
     }
+    const setLocation = (location) => {
+      context.emit('set-location', location)
+    }
+    const incrementChildren = () => {
+      context.emit('increment-children')
+    }
+    const decrementChildren = () => {
+      context.emit('decrement-children')
+    }
+    const incrementAdults = () => {
+      context.emit('increment-adults')
+    }
+    const decrementAdults = () => {
+      context.emit('decrement-adults')
+    }
+    return { closeSearchModal, setLocation, incrementChildren, decrementChildren, incrementAdults, decrementAdults}
   }
 };
 </script>
